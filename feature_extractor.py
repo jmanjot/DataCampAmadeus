@@ -11,6 +11,13 @@ class FeatureExtractor(object):
     def transform(self, X_df):
         data_encoded = X_df
         path = os.path.dirname(__file__) 
+        
+        data_holidays = pd.read_csv("data_holidays_3.csv")
+        data_holidays_encoded = data_holidays[['DateOfDeparture', 'JF-3', 'JF-2', 'JF-1', 'JF', 'JF+1', 'JF+2', 'JF+1']]
+        data_encoded = data_encoded.merge(data_holidays_encoded, how='left',
+        left_on=['DateOfDeparture'], 
+        right_on=['DateOfDeparture'], sort=False)
+
         data_encoded = data_encoded.join(pd.get_dummies(data_encoded['Departure'], prefix='d'))
         data_encoded = data_encoded.join(pd.get_dummies(data_encoded['Arrival'], prefix='a'))
         data_encoded = data_encoded.drop('Departure', axis=1)
@@ -30,7 +37,10 @@ class FeatureExtractor(object):
         # data_encoded = data_encoded.join(pd.get_dummies(data_encoded['day'], prefix='d'))
         data_encoded = data_encoded.join(pd.get_dummies(data_encoded['weekday'], prefix='wd'))
         data_encoded = data_encoded.join(pd.get_dummies(data_encoded['week'], prefix='w'))
-
+        
+        data_encoded = data_encoded.drop('weekday', axis=1)
+        data_encoded = data_encoded.drop('week', axis=1)
+        data_encoded = data_encoded.drop('std_wtd', axis=1)
         data_encoded = data_encoded.drop('DateOfDeparture', axis=1)
         
         X_array = data_encoded.values
