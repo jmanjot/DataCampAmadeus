@@ -12,7 +12,7 @@ class FeatureExtractor(object):
         data_encoded = X_df
         path = os.path.dirname(__file__) 
         
-        data_holidays = pd.read_csv("data_holidays_3.csv")
+        data_holidays = pd.read_csv(os.path.join(path, "data_holidays_3.csv"))
         data_holidays_encoded = data_holidays[['DateOfDeparture', 'JF-3', 'JF-2', 'JF-1', 'JF', 'JF+1', 'JF+2', 'JF+1']]
         data_encoded = data_encoded.merge(data_holidays_encoded, how='left',
         left_on=['DateOfDeparture'], 
